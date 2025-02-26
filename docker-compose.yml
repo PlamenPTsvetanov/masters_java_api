@@ -1,0 +1,27 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres
+    container_name: postgres-db
+    restart: always
+    environment:
+      POSTGRES_USER: run/secrets/db_user
+      POSTGRES_PASSWORD: run/secrets/db_password
+      POSTGRES_DB: run/secrets/db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    secrets:
+      - db
+      - db_password
+      - db_user
+volumes:
+  postgres_data:
+secrets:
+  db_password:
+    file: dockerSecrets/db_password.txt
+  db_user:
+    file: dockerSecrets/db_user.txt
+  db:
+    file: dockerSecrets/db.txt
