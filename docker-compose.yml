@@ -7,18 +7,17 @@ services:
     container_name: postgres-db
     restart: on-failure
     environment:
-      POSTGRES_USER: run/secrets/db_user
-      POSTGRES_PASSWORD: run/secrets/db_password
-      POSTGRES_DB: run/secrets/db
+      POSTGRES_USER_FILE: run/secrets/db_user
+      POSTGRES_PASSWORD_FILE: run/secrets/db_password
+      POSTGRES_DB_FILE: run/secrets/db
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data:/postgresql/data
     secrets:
       - db
       - db_password
       - db_user
-
 
   broker:
     image: apache/kafka:latest
@@ -46,6 +45,7 @@ services:
       CLUSTER_ID: MkU3OEVBNTcwNTJENDM2Qk
 
   app:
+    build: .
     networks:
       - backend
     ports:
@@ -56,18 +56,18 @@ services:
     image: java_api:v1
     container_name: java-api
     restart: always
-    env_file: dockerSecrets/api.env
+    env_file: ./dockerSecrets/api.env
 
 volumes:
   postgres_data:
 secrets:
   db_password:
-    file: dockerSecrets/db_password.txt
+    file: ./dockerSecrets/db_password.txt
   db_user:
-    file: dockerSecrets/db_user.txt
+    file: ./dockerSecrets/db_user.txt
   db:
-    file: dockerSecrets/db.txt
+    file: ./dockerSecrets/db.txt
   api_db_url:
-    file: dockerSecrets/api.env
+    file: ./dockerSecrets/api.env
 networks:
   backend:
