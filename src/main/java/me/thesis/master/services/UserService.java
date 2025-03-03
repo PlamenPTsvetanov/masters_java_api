@@ -5,7 +5,7 @@ import me.thesis.master.common.service.BaseService;
 import me.thesis.master.models.views.UserInView;
 import me.thesis.master.models.orm.UserOrmBean;
 import me.thesis.master.models.views.UserOutView;
-import me.thesis.master.repositories.user.UserRepository;
+import me.thesis.master.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
 @Service
