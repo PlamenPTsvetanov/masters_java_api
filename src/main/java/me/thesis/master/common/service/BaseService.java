@@ -9,9 +9,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 @Component
@@ -33,6 +31,7 @@ public abstract class BaseService<Orm extends BaseOrmBean,
         inClass = in;
         outClass = out;
     }
+
     public OutView getOne(UUID id) {
         log.info("Staring getOne for id {}", id);
         OutView outView = null;
@@ -144,11 +143,19 @@ public abstract class BaseService<Orm extends BaseOrmBean,
     protected void validateAfterPut(Orm orm) {
     }
 
-    private OutView mapToOutView(Orm bean) {
+    protected OutView mapToOutView(Orm bean) {
         return MODEL_MAPPER.map(bean, outClass);
     }
 
-    private Orm mapToOrmBean(InView inView) {
+    protected List<OutView> mapToOutList(List<Orm> beans) {
+        List<OutView> outList = new ArrayList<>();
+        for (Orm bean : beans) {
+            outList.add(this.mapToOutView(bean));
+        }
+        return outList;
+    }
+
+    protected Orm mapToOrmBean(InView inView) {
         Orm map = MODEL_MAPPER.map(inView, ormClass);
         map.setId(UUID.randomUUID());
 

@@ -1,8 +1,8 @@
 package me.thesis.master.controllers;
 
 import me.thesis.master.common.controllers.BaseController;
-import me.thesis.master.models.views.UserInView;
-import me.thesis.master.models.views.UserOutView;
+import me.thesis.master.models.views.user.UserInView;
+import me.thesis.master.models.views.user.UserOutView;
 import me.thesis.master.services.UserService;
 import org.springframework.web.bind.annotation.*;
 
