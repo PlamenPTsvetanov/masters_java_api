@@ -1,10 +1,9 @@
-package me.thesis.master.user.controllers;
+package me.thesis.master.controllers;
 
-import lombok.Getter;
 import me.thesis.master.common.controllers.BaseController;
-import me.thesis.master.user.models.UserInView;
-import me.thesis.master.user.models.UserOutView;
-import me.thesis.master.user.services.UserService;
+import me.thesis.master.models.views.UserInView;
+import me.thesis.master.models.views.UserOutView;
+import me.thesis.master.services.UserService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;

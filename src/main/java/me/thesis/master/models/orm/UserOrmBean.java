@@ -1,4 +1,4 @@
-package me.thesis.master.user.models;
+package me.thesis.master.models.orm;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

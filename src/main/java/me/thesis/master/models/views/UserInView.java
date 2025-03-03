@@ -1,10 +1,9 @@
-package me.thesis.master.user.models;
+package me.thesis.master.models.views;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import me.thesis.master.common.models.BaseInView;
-import me.thesis.master.common.models.BaseOrmBean;
 
 @Getter
 @Setter

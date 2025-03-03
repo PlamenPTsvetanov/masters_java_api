@@ -1,11 +1,11 @@
-package me.thesis.master.user.services;
+package me.thesis.master.services;
 
 import me.thesis.master.common.repositories.BaseRepository;
 import me.thesis.master.common.service.BaseService;
-import me.thesis.master.user.models.UserInView;
-import me.thesis.master.user.models.UserOrmBean;
-import me.thesis.master.user.models.UserOutView;
-import me.thesis.master.user.repositories.UserRepository;
+import me.thesis.master.models.views.UserInView;
+import me.thesis.master.models.orm.UserOrmBean;
+import me.thesis.master.models.views.UserOutView;
+import me.thesis.master.repositories.user.UserRepository;
 import org.springframework.stereotype.Service;
 
 @Service

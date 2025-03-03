@@ -1,4 +1,4 @@
-package me.thesis.master.user.models;
+package me.thesis.master.models.views;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,7 +1,7 @@
-package me.thesis.master.user.repositories;
+package me.thesis.master.repositories;
 
 import me.thesis.master.common.repositories.BaseRepository;
-import me.thesis.master.user.models.UserOrmBean;
+import me.thesis.master.models.orm.UserOrmBean;
 import org.springframework.stereotype.Repository;
 
 @Repository
