@@ -2,34 +2,33 @@ package me.thesis.master.services;
 
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import me.thesis.master.common.exceptions.KeyNotActiveException;
 import me.thesis.master.common.exceptions.KeyNotFoundException;
 import me.thesis.master.common.exceptions.TooManyKeysException;
-import me.thesis.master.common.exceptions.UserNotFoundException;
 import me.thesis.master.common.models.BaseInView;
 import me.thesis.master.common.service.BaseService;
 import me.thesis.master.models.orm.ApiKeyOrmBean;
-import me.thesis.master.models.orm.UserOrmBean;
 import me.thesis.master.models.views.apiKey.ApiKeyOutView;
 import me.thesis.master.repositories.ApiKeyRepository;
-import me.thesis.master.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @Service
 public class ApiKeyService extends BaseService<ApiKeyOrmBean, BaseInView, ApiKeyOutView> {
     private final ApiKeyRepository apiKeyRepository;
-    private final UserRepository userRepository;
 
-    public ApiKeyService(ApiKeyRepository apiKeyRepository, UserRepository userRepository) {
+    public ApiKeyService(ApiKeyRepository apiKeyRepository) {
         super(ApiKeyOrmBean.class, BaseInView.class, ApiKeyOutView.class);
         this.apiKeyRepository = apiKeyRepository;
-        this.userRepository = userRepository;
     }
 
     @Override
@@ -45,9 +44,6 @@ public class ApiKeyService extends BaseService<ApiKeyOrmBean, BaseInView, ApiKey
      */
     @Transactional
     public List<ApiKeyOutView> getAllForUser(UUID userId, Boolean filter) {
-        // Validating user
-        validateUser(userId);
-
         // Retrieving all desired keys
         List<ApiKeyOrmBean> byUserId = new ArrayList<>();
         if (filter) {
@@ -66,8 +62,6 @@ public class ApiKeyService extends BaseService<ApiKeyOrmBean, BaseInView, ApiKey
      */
     @Transactional
     public ApiKeyOutView generateApiKey(UUID userId) {
-        validateUser(userId);
-
         BigInteger keysForUser = this.apiKeyRepository.countByUserIdAndIsActive(userId, true);
         if (keysForUser.compareTo(BigInteger.valueOf(5)) >= 0) {
             throw new TooManyKeysException("Too many keys for user! Disable old keys first!");
@@ -82,29 +76,25 @@ public class ApiKeyService extends BaseService<ApiKeyOrmBean, BaseInView, ApiKey
     }
 
     @Transactional
-    public ApiKeyOutView disableApiKey(UUID userId, UUID keyId) {
-        validateUser(userId);
-
-        Optional<ApiKeyOrmBean> keyOpt = this.apiKeyRepository.findById(keyId);
-        if (keyOpt.isEmpty()) {
-            throw new KeyNotFoundException("Key not found! Could not disable api key!");
-        }
-
-        ApiKeyOrmBean key = keyOpt.get();
+    public ApiKeyOutView disableApiKey(UUID userId, String keyValue) {
+        ApiKeyOrmBean key = this.apiKeyRepository.findByUserIdAndValue(userId, keyValue);
         key.setIsActive(false);
         key.setValidUntil(Instant.now());
         ApiKeyOrmBean save = apiKeyRepository.save(key);
         return mapToOutView(save);
     }
 
-    private void validateUser(UUID userId) {
-        // Verify user
-        Optional<UserOrmBean> userOpt = this.userRepository.findById(userId);
-        if (userOpt.isEmpty()) {
-            throw new UserNotFoundException("User not found!");
+
+    public void checkApiKeyValidity(UUID userId, String value) {
+        ApiKeyOrmBean apiKey = this.apiKeyRepository.findByUserIdAndValue(userId, value);
+        if (apiKey == null) {
+            throw new KeyNotFoundException("Key not found!");
+        }
+
+        if (!apiKey.getIsActive()) {
+            throw new KeyNotActiveException("Key is not active!");
         }
     }
-
 
     /**
      * Creating api key orm for user.

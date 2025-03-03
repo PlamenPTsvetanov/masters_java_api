@@ -1,0 +1,105 @@
+package me.thesis.master.services;
+
+import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
+import me.thesis.master.common.exceptions.VideoNotFoundException;
+import me.thesis.master.common.service.BaseService;
+import me.thesis.master.models.orm.VideoOrmBean;
+import me.thesis.master.models.views.video.VideoInView;
+import me.thesis.master.models.views.video.VideoOutView;
+import me.thesis.master.repositories.VideoRepository;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+@Slf4j
+@Service
+public class VideoService extends BaseService<VideoOrmBean, VideoInView, VideoOutView> {
+    @Value("${save_location:/files}")
+    private String saveLocationDir;
+
+    private final VideoRepository videoRepository;
+
+    public VideoService(VideoRepository videoRepository) {
+        super(VideoOrmBean.class, VideoInView.class, VideoOutView.class);
+        this.videoRepository = videoRepository;
+    }
+
+    @Override
+    protected VideoRepository getRepository() {
+        return videoRepository;
+    }
+
+    public List<VideoOutView> getAllVideosFor(UUID userId, int size, int offset) {
+        if (size > 100) {
+            size = 100;
+        }
+        if (size < 0) {
+            size = 10;
+        }
+
+        Pageable page = PageRequest.of(offset, size);
+        List<VideoOrmBean> allByUserId = this.videoRepository.findAllByUserId(userId, page);
+
+        return mapToOutList(allByUserId);
+    }
+
+    @Transactional
+    public VideoOutView saveVideo(UUID userId, VideoInView videoIn, MultipartFile multipartFile) {
+        try {
+            String filePath = saveVideoToStorage(multipartFile);
+
+            VideoOrmBean ormBean = new VideoOrmBean();
+            ormBean.setId(UUID.randomUUID());
+            ormBean.setName(videoIn.getName());
+            ormBean.setDescription(videoIn.getDescription());
+            ormBean.setLocation(filePath);
+            ormBean.setFreeToUse(videoIn.getFreeToUse());
+            ormBean.setIsCopyrighted(videoIn.getIsCopyrighted());
+            ormBean.setUserId(userId);
+
+            VideoOrmBean save = videoRepository.save(ormBean);
+
+            return mapToOutView(save);
+        } catch (IOException e) {
+            throw new RuntimeException("Exception occurred while saving video", e);
+        }
+    }
+
+    @Override
+    public VideoOutView deleteOne(UUID id) {
+        Optional<VideoOrmBean> byId = this.videoRepository.findById(id);
+        if (byId.isEmpty()) {
+            throw new VideoNotFoundException("Video not found!");
+        }
+
+        String location = byId.get().getLocation();
+        File file = new File(location);
+        file.delete();
+
+        return mapToOutView(byId.get());
+    }
+
+    private String saveVideoToStorage(MultipartFile multipartFile) throws IOException {
+        File directory = new File(saveLocationDir);
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
+
+        //Securing file
+        String filePath = saveLocationDir + File.separator + UUID.randomUUID();
+        File destinationFile = new File(filePath);
+
+        multipartFile.transferTo(destinationFile);
+
+        return filePath;
+    }
+}
