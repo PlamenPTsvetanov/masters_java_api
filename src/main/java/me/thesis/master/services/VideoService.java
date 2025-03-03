@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import me.thesis.master.common.exceptions.VideoNotFoundException;
 import me.thesis.master.common.service.BaseService;
+import me.thesis.master.kafka.KafkaProducer;
 import me.thesis.master.models.orm.VideoOrmBean;
 import me.thesis.master.models.views.video.VideoInView;
 import me.thesis.master.models.views.video.VideoOutView;
@@ -27,10 +28,12 @@ public class VideoService extends BaseService<VideoOrmBean, VideoInView, VideoOu
     private String saveLocationDir;
 
     private final VideoRepository videoRepository;
+    private final KafkaProducer kafkaProducer;
 
-    public VideoService(VideoRepository videoRepository) {
+    public VideoService(VideoRepository videoRepository, KafkaProducer kafkaProducer) {
         super(VideoOrmBean.class, VideoInView.class, VideoOutView.class);
         this.videoRepository = videoRepository;
+        this.kafkaProducer = kafkaProducer;
     }
 
     @Override
@@ -55,6 +58,7 @@ public class VideoService extends BaseService<VideoOrmBean, VideoInView, VideoOu
     @Transactional
     public VideoOutView saveVideo(UUID userId, VideoInView videoIn, MultipartFile multipartFile) {
         try {
+            kafkaProducer.send("video.created", videoIn.toString());
             String filePath = saveVideoToStorage(multipartFile);
 
             VideoOrmBean ormBean = new VideoOrmBean();

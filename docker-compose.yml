@@ -57,6 +57,8 @@ services:
     container_name: java-api
     restart: always
     env_file: ./dockerSecrets/api.env
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: broker:29092
 
 volumes:
   postgres_data:
