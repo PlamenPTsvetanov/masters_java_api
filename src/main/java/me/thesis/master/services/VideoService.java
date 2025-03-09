@@ -58,7 +58,6 @@ public class VideoService extends BaseService<VideoOrmBean, VideoInView, VideoOu
     @Transactional
     public VideoOutView saveVideo(UUID userId, VideoInView videoIn, MultipartFile multipartFile) {
         try {
-            kafkaProducer.send("video.created", videoIn.toString());
             String filePath = saveVideoToStorage(multipartFile);
 
             VideoOrmBean ormBean = new VideoOrmBean();
@@ -72,6 +71,7 @@ public class VideoService extends BaseService<VideoOrmBean, VideoInView, VideoOu
 
             VideoOrmBean save = videoRepository.save(ormBean);
 
+            kafkaProducer.send("video.created", save.toString());
             return mapToOutView(save);
         } catch (IOException e) {
             throw new RuntimeException("Exception occurred while saving video", e);
