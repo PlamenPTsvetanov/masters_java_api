@@ -58,7 +58,21 @@ services:
     restart: always
     env_file: ./dockerSecrets/api.env
     environment:
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: broker:29092
+      KAFKA_BOOTSTRAP_SERVERS: broker:29092
+
+  content_id:
+    networks:
+      - backend
+    depends_on:
+      - postgres
+      - broker
+      - app
+    image: content_id:v0.1
+    container_name: content-id
+    restart: always
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: broker:29092
+      PINECONE_API_KEY: pinecone
 
 volumes:
   postgres_data:

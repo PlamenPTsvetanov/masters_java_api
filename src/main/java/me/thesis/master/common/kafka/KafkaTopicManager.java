@@ -16,7 +16,7 @@ import java.util.concurrent.ExecutionException;
 @Slf4j
 @Component
 public class KafkaTopicManager {
-    @Value(value = "${spring.kafka.bootstrap-servers}")
+    @Value(value = "${kafka.bootstrap-servers}")
     private String bootstrapAddress;
 
     public void createTopicIfNotExist(final String topicName, final int partitions, final short replicationFactor) {
