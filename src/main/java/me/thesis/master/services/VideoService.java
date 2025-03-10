@@ -1,5 +1,6 @@
 package me.thesis.master.services;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import me.thesis.master.common.exceptions.VideoNotFoundException;
@@ -24,14 +25,16 @@ import java.util.UUID;
 @Slf4j
 @Service
 public class VideoService extends BaseService<VideoOrmBean, VideoInView, VideoOutView> {
-    @Value("${save_location:/files}")
+    @Value("${SAVE_LOCATION:/files}")
     private String saveLocationDir;
 
+    private final ObjectMapper mapper;
     private final VideoRepository videoRepository;
     private final KafkaProducer kafkaProducer;
 
-    public VideoService(VideoRepository videoRepository, KafkaProducer kafkaProducer) {
+    public VideoService(ObjectMapper mapper, VideoRepository videoRepository, KafkaProducer kafkaProducer) {
         super(VideoOrmBean.class, VideoInView.class, VideoOutView.class);
+        this.mapper = mapper;
         this.videoRepository = videoRepository;
         this.kafkaProducer = kafkaProducer;
     }
@@ -69,9 +72,11 @@ public class VideoService extends BaseService<VideoOrmBean, VideoInView, VideoOu
             ormBean.setIsCopyrighted(videoIn.getIsCopyrighted());
             ormBean.setUserId(userId);
 
-            VideoOrmBean save = videoRepository.save(ormBean);
 
-            kafkaProducer.send("video.created", save.toString());
+            VideoOrmBean save = videoRepository.save(ormBean);
+            String json = mapper.writeValueAsString(ormBean);
+
+            kafkaProducer.send("video.created", json);
             return mapToOutView(save);
         } catch (IOException e) {
             throw new RuntimeException("Exception occurred while saving video", e);

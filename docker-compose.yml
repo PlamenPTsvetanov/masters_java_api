@@ -63,6 +63,8 @@ services:
     env_file: ./dockerSecrets/api.env
     environment:
       KAFKA_BOOTSTRAP_SERVERS: broker:29092
+    volumes:
+      - shared_data:/files
 
   content_id:
     networks:
@@ -77,9 +79,12 @@ services:
     env_file: ./dockerSecrets/content_id.env
     environment:
       KAFKA_BOOTSTRAP_SERVERS: broker:29092
+    volumes:
+      - shared_data:/files
 
 volumes:
   postgres_data:
+  shared_data:
 secrets:
   db_password:
     file: ./dockerSecrets/db_password.txt
