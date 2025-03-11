@@ -1,5 +1,6 @@
 package me.thesis.master.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +10,7 @@ import me.thesis.master.kafka.KafkaProducer;
 import me.thesis.master.models.orm.VideoOrmBean;
 import me.thesis.master.models.views.video.VideoInView;
 import me.thesis.master.models.views.video.VideoOutView;
+import me.thesis.master.models.views.video.VideoTransferView;
 import me.thesis.master.repositories.VideoRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
@@ -74,13 +76,22 @@ public class VideoService extends BaseService<VideoOrmBean, VideoInView, VideoOu
 
 
             VideoOrmBean save = videoRepository.save(ormBean);
-            String json = mapper.writeValueAsString(ormBean);
+
+            String json = buildTransferView(ormBean);
 
             kafkaProducer.send("video.created", json);
             return mapToOutView(save);
         } catch (IOException e) {
             throw new RuntimeException("Exception occurred while saving video", e);
         }
+    }
+
+    private String buildTransferView(VideoOrmBean ormBean) throws JsonProcessingException {
+        VideoTransferView transfer = new VideoTransferView();
+        transfer.setDatabaseId(ormBean.getId());
+        transfer.setLocation(ormBean.getLocation());
+        String json = mapper.writeValueAsString(transfer);
+        return json;
     }
 
     @Override
