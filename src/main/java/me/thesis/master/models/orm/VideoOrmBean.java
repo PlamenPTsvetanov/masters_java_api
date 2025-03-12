@@ -26,7 +26,10 @@ public class VideoOrmBean extends BaseOrmBean {
     private Boolean freeToUse;
     @Column(name = "USER_ID", nullable = false)
     private UUID userId;
-
+    @Column(name = "STATUS", nullable = false)
+    private String status;
+    @Column(name = "STATUS_MESSAGE")
+    private String statusMessage;
     @ManyToOne
     @JoinColumn(name = "USER_ID", updatable = false, insertable = false, nullable = false)
     private UserOrmBean user;

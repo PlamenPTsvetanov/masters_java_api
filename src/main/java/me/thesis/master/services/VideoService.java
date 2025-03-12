@@ -73,7 +73,7 @@ public class VideoService extends BaseService<VideoOrmBean, VideoInView, VideoOu
             ormBean.setFreeToUse(videoIn.getFreeToUse());
             ormBean.setIsCopyrighted(videoIn.getIsCopyrighted());
             ormBean.setUserId(userId);
-
+            ormBean.setStatus("ADDED");
 
             VideoOrmBean save = videoRepository.save(ormBean);
 
