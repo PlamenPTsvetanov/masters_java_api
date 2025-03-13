@@ -10,6 +10,7 @@ import me.thesis.master.kafka.KafkaProducer;
 import me.thesis.master.models.orm.VideoOrmBean;
 import me.thesis.master.models.views.video.VideoInView;
 import me.thesis.master.models.views.video.VideoOutView;
+import me.thesis.master.models.views.video.VideoStatusTransferView;
 import me.thesis.master.models.views.video.VideoTransferView;
 import me.thesis.master.repositories.VideoRepository;
 import org.springframework.beans.factory.annotation.Value;
@@ -106,6 +107,25 @@ public class VideoService extends BaseService<VideoOrmBean, VideoInView, VideoOu
         file.delete();
 
         return mapToOutView(byId.get());
+    }
+
+    @Transactional
+    public void updateStatus(String message) {
+        try {
+            log.info("Updating video status: {}", message);
+            VideoStatusTransferView in = mapper.readValue(message, VideoStatusTransferView.class);
+            if (in != null) {
+                VideoOrmBean ref = videoRepository.getReferenceById(in.getId());
+                if (ref.getStatus().equals("EXCEPTION")) {
+                    return;
+                }
+                ref.setStatus(in.getStatus());
+                ref.setStatusDescription(in.getMessage());
+                videoRepository.save(ref);
+            }
+        } catch (JsonProcessingException e) {
+            log.error("Exception occurred while updating video status", e);
+        }
     }
 
     private String saveVideoToStorage(MultipartFile multipartFile) throws IOException {

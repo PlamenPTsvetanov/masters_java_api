@@ -28,9 +28,9 @@ public class VideoOrmBean extends BaseOrmBean {
     private UUID userId;
     @Column(name = "STATUS", nullable = false)
     private String status;
-    @Column(name = "STATUS_MESSAGE")
-    private String statusMessage;
-    @ManyToOne
+    @Column(name = "STATUS_DESCRIPTION")
+    private String statusDescription;
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "USER_ID", updatable = false, insertable = false, nullable = false)
     private UserOrmBean user;
 }

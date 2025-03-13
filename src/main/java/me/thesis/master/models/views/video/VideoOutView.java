@@ -13,4 +13,6 @@ public class VideoOutView extends BaseOutView {
     private String description;
     private Boolean isCopyrighted;
     private Boolean freeToUse;
+    private String status;
+    private String statusDescription;
 }
