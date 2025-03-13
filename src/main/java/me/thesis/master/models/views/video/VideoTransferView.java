@@ -10,4 +10,6 @@ import java.util.UUID;
 public class VideoTransferView {
     private String location;
     private UUID databaseId;
+    private Boolean freeToUse;
+    private Boolean isCopyrighted;
 }

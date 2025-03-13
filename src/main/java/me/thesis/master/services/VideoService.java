@@ -91,6 +91,8 @@ public class VideoService extends BaseService<VideoOrmBean, VideoInView, VideoOu
         VideoTransferView transfer = new VideoTransferView();
         transfer.setDatabaseId(ormBean.getId());
         transfer.setLocation(ormBean.getLocation());
+        transfer.setFreeToUse(ormBean.getFreeToUse());
+        transfer.setIsCopyrighted(ormBean.getIsCopyrighted());
         String json = mapper.writeValueAsString(transfer);
         return json;
     }
@@ -110,6 +112,7 @@ public class VideoService extends BaseService<VideoOrmBean, VideoInView, VideoOu
 
             kafkaProducer.send("video.deleted", id.toString());
 
+            videoRepository.deleteById(id);
             return mapToOutView(byId.get());
         } catch (Exception e) {
             throw new RuntimeException("Exception occurred while deleting video", e);
