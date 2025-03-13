@@ -1,5 +1,8 @@
 package me.thesis.master.common.kafka;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,16 +13,11 @@ import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
 @EnableKafka
 @Configuration
 public class KafkaConsumerConfig {
     @Value(value = "${kafka.bootstrap-servers}")
     private String bootstrapAddress;
-
     @Bean
     public ConsumerFactory<String, String> consumerFactory() {
         Map<String, Object> props = new HashMap<>();
