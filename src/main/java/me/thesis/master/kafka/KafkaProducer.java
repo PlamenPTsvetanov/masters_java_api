@@ -19,7 +19,7 @@ public class KafkaProducer {
     public void send(String topic, String message) {
         kafkaTopicManager.createTopicIfNotExist(topic, 1, (short) 1);
 
-        log.info("Sending message: {} to topic: {}", message, topic);
+        log.info("\t\t\t\tSending message: {} to topic: {}", message, topic);
         kafkaTemplate.send(topic, message);
     }
 }

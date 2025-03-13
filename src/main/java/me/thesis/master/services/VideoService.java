@@ -96,17 +96,24 @@ public class VideoService extends BaseService<VideoOrmBean, VideoInView, VideoOu
     }
 
     @Override
+    @Transactional
     public VideoOutView deleteOne(UUID id) {
-        Optional<VideoOrmBean> byId = this.videoRepository.findById(id);
-        if (byId.isEmpty()) {
-            throw new VideoNotFoundException("Video not found!");
+        try {
+            Optional<VideoOrmBean> byId = this.videoRepository.findById(id);
+            if (byId.isEmpty()) {
+                throw new VideoNotFoundException("Video not found!");
+            }
+
+            String location = byId.get().getLocation();
+            File file = new File(location);
+            file.delete();
+
+            kafkaProducer.send("video.deleted", id.toString());
+
+            return mapToOutView(byId.get());
+        } catch (Exception e) {
+            throw new RuntimeException("Exception occurred while deleting video", e);
         }
-
-        String location = byId.get().getLocation();
-        File file = new File(location);
-        file.delete();
-
-        return mapToOutView(byId.get());
     }
 
     @Transactional
