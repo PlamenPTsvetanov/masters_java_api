@@ -1,9 +1,6 @@
 package me.thesis.master.common.controllers;
 
-import me.thesis.master.common.exceptions.KeyNotFoundException;
-import me.thesis.master.common.exceptions.TooManyKeysException;
-import me.thesis.master.common.exceptions.UserAlreadyExistsException;
-import me.thesis.master.common.exceptions.UserNotFoundException;
+import me.thesis.master.common.exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;

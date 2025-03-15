@@ -30,7 +30,7 @@ public class VideoOrmBean extends BaseOrmBean {
     private String status;
     @Column(name = "STATUS_DESCRIPTION")
     private String statusDescription;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID", updatable = false, insertable = false, nullable = false)
     private UserOrmBean user;
 }

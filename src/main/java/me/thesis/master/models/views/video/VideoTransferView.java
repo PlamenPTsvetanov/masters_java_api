@@ -12,4 +12,6 @@ public class VideoTransferView {
     private UUID databaseId;
     private Boolean freeToUse;
     private Boolean isCopyrighted;
+    private String description;
+    private String userEmail;
 }

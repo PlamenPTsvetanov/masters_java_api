@@ -5,12 +5,13 @@ import lombok.Setter;
 import lombok.ToString;
 import me.thesis.master.common.models.BaseInView;
 
+import java.util.UUID;
+
 @Getter
 @Setter
 @ToString
-public class UserInView extends BaseInView {
-    private String firstName;
-    private String lastName;
-    private String email;
+public class UserLoginInView extends BaseInView {
+    private UUID userId;
+    private String apiKeyValue;
 
 }

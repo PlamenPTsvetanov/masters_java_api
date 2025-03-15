@@ -8,6 +8,7 @@ import me.thesis.master.common.service.BaseService;
 import me.thesis.master.models.orm.UserOrmBean;
 import me.thesis.master.models.views.user.UserInView;
 import me.thesis.master.models.views.user.UserOutView;
+import me.thesis.master.repositories.ApiKeyRepository;
 import me.thesis.master.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 

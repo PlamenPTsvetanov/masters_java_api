@@ -12,6 +12,7 @@ import me.thesis.master.models.views.video.VideoInView;
 import me.thesis.master.models.views.video.VideoOutView;
 import me.thesis.master.models.views.video.VideoStatusTransferView;
 import me.thesis.master.models.views.video.VideoTransferView;
+import me.thesis.master.repositories.UserRepository;
 import me.thesis.master.repositories.VideoRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
@@ -33,12 +34,14 @@ public class VideoService extends BaseService<VideoOrmBean, VideoInView, VideoOu
 
     private final ObjectMapper mapper;
     private final VideoRepository videoRepository;
+    private final UserRepository userRepository;
     private final KafkaProducer kafkaProducer;
 
-    public VideoService(ObjectMapper mapper, VideoRepository videoRepository, KafkaProducer kafkaProducer) {
+    public VideoService(ObjectMapper mapper, VideoRepository videoRepository, UserRepository userRepository, KafkaProducer kafkaProducer) {
         super(VideoOrmBean.class, VideoInView.class, VideoOutView.class);
         this.mapper = mapper;
         this.videoRepository = videoRepository;
+        this.userRepository = userRepository;
         this.kafkaProducer = kafkaProducer;
     }
 
@@ -74,7 +77,8 @@ public class VideoService extends BaseService<VideoOrmBean, VideoInView, VideoOu
             ormBean.setFreeToUse(videoIn.getFreeToUse());
             ormBean.setIsCopyrighted(videoIn.getIsCopyrighted());
             ormBean.setUserId(userId);
-            ormBean.setStatus("ADDED");
+            ormBean.setUser(userRepository.findById(userId).get());
+            ormBean.setStatus("PROCESSING");
 
             VideoOrmBean save = videoRepository.save(ormBean);
 
@@ -93,6 +97,8 @@ public class VideoService extends BaseService<VideoOrmBean, VideoInView, VideoOu
         transfer.setLocation(ormBean.getLocation());
         transfer.setFreeToUse(ormBean.getFreeToUse());
         transfer.setIsCopyrighted(ormBean.getIsCopyrighted());
+        transfer.setDescription(ormBean.getDescription());
+        transfer.setUserEmail(ormBean.getUser().getEmail());
         String json = mapper.writeValueAsString(transfer);
         return json;
     }
