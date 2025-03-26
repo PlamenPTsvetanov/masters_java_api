@@ -30,6 +30,10 @@ public class VideoOrmBean extends BaseOrmBean {
     private String status;
     @Column(name = "STATUS_DESCRIPTION")
     private String statusDescription;
+    @Column(name = "DEEPFAKE_STATUS")
+    private String deepfakeStatus;
+    @Column(name = "DEEPFAKE_STATUS_DESCRIPTION")
+    private String deepfakeStatusDescription;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID", updatable = false, insertable = false, nullable = false)
     private UserOrmBean user;

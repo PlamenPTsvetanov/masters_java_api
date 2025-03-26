@@ -10,4 +10,6 @@ public class VideoStatusTransferView {
     private UUID id;
     private String status;
     private String message;
+    private String deepfakeStatus;
+    private String deepfakeMessage;
 }

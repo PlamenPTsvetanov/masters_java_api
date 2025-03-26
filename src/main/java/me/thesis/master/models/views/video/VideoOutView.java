@@ -15,4 +15,7 @@ public class VideoOutView extends BaseOutView {
     private Boolean freeToUse;
     private String status;
     private String statusDescription;
+    private String deepfakeStatus;
+    private String deepfakeStatusDescription;
+
 }

@@ -137,6 +137,8 @@ public class VideoService extends BaseService<VideoOrmBean, VideoInView, VideoOu
                 }
                 ref.setStatus(in.getStatus());
                 ref.setStatusDescription(in.getMessage());
+                ref.setDeepfakeStatus(in.getDeepfakeStatus());
+                ref.setDeepfakeStatusDescription(in.getDeepfakeMessage());
                 videoRepository.save(ref);
             }
         } catch (JsonProcessingException e) {
