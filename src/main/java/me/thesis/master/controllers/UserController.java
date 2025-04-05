@@ -9,8 +9,6 @@ import me.thesis.master.services.ApiKeyService;
 import me.thesis.master.services.UserService;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.UUID;
-
 @RestController
 @RequestMapping("/users")
 public class UserController extends BaseController {
@@ -42,18 +40,18 @@ public class UserController extends BaseController {
         return out;
     }
 
-    @PutMapping(path = "/{id}")
-    public UserOutView putUser(@PathVariable("id") UUID id, @RequestBody final UserInView userInView) {
-        return this.userService.putOne(userInView, id);
-    }
-
-    @DeleteMapping(path = "/{id}")
-    public UserOutView deleteUser(@PathVariable("id") UUID id) {
-        return this.userService.deleteOne(id);
-    }
-
-    @GetMapping(path = "/{id}")
-    public UserOutView getUser(@PathVariable("id") UUID id) {
-        return this.userService.getOne(id);
-    }
+//    @PutMapping(path = "/{id}")
+//    public UserOutView putUser(@PathVariable("id") UUID id, @RequestBody final UserInView userInView) {
+//        return this.userService.putOne(userInView, id);
+//    }
+//
+//    @DeleteMapping(path = "/{id}")
+//    public UserOutView deleteUser(@PathVariable("id") UUID id) {
+//        return this.userService.deleteOne(id);
+//    }
+//
+//    @GetMapping(path = "/{id}")
+//    public UserOutView getUser(@PathVariable("id") UUID id) {
+//        return this.userService.getOne(id);
+//    }
 }

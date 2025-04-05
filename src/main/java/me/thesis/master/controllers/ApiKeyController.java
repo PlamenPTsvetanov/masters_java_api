@@ -6,6 +6,7 @@ import me.thesis.master.services.ApiKeyService;
 import me.thesis.master.services.UserService;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,14 +22,16 @@ public class ApiKeyController extends BaseController {
     }
 
     @GetMapping("/all")
-    public List<ApiKeyOutView> getAll(@RequestHeader("User-Id") UUID userId) {
+    public List<ApiKeyOutView> getAll(@RequestHeader("User-Id") UUID userId,
+                                      @RequestParam(value = "validTill", required = false) Instant instant) {
         userService.validateUser(userId);
-        return this.apiKeyService.getAllForUser(userId, false);
+        return this.apiKeyService.getAllForUser(userId, false, instant);
     }
 
     @GetMapping("/active")
-    public List<ApiKeyOutView> getAllActive(@RequestHeader("User-Id") UUID userId) {
-        return this.apiKeyService.getAllForUser(userId, true);
+    public List<ApiKeyOutView> getAllActive(@RequestHeader("User-Id") UUID userId,
+                                            @RequestParam(value = "validTill", required = false) Instant instant) {
+        return this.apiKeyService.getAllForUser(userId, true, instant);
     }
 
     @PostMapping("/generate")

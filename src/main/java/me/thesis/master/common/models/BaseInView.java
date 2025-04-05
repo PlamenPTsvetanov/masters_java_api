@@ -8,5 +8,5 @@ import java.util.UUID;
 @Getter
 @Setter
 public abstract class BaseInView {
-    private UUID id;
+    protected UUID id;
 }

@@ -50,7 +50,7 @@ public class VideoService extends BaseService<VideoOrmBean, VideoInView, VideoOu
         return videoRepository;
     }
 
-    public List<VideoOutView> getAllVideosFor(UUID userId, int size, int offset) {
+    public List<VideoOutView> getAllVideosFor(UUID userId, int size, int offset, String name, Boolean isCopyrighted, Boolean freeToUse, String status, String statusDescription, String deepfakeStatus, String deepFakeStatusDescription) {
         if (size > 100) {
             size = 100;
         }
@@ -59,7 +59,15 @@ public class VideoService extends BaseService<VideoOrmBean, VideoInView, VideoOu
         }
 
         Pageable page = PageRequest.of(offset, size);
-        List<VideoOrmBean> allByUserId = this.videoRepository.findAllByUserId(userId, page);
+        List<VideoOrmBean> allByUserId = this.videoRepository.findAllByFilter(
+                userId,
+                name,
+                isCopyrighted,
+                freeToUse,
+                status,
+                statusDescription,
+                deepfakeStatus,
+                deepFakeStatusDescription, page);
 
         return mapToOutList(allByUserId);
     }

@@ -43,13 +43,17 @@ public class ApiKeyService extends BaseService<ApiKeyOrmBean, BaseInView, ApiKey
      * @return List of api keys.
      */
     @Transactional
-    public List<ApiKeyOutView> getAllForUser(UUID userId, Boolean filter) {
+    public List<ApiKeyOutView> getAllForUser(UUID userId, Boolean filter, Instant end) {
+        if (end == null) {
+            end = Instant.now().plus(1, ChronoUnit.CENTURIES);
+        }
+
         // Retrieving all desired keys
         List<ApiKeyOrmBean> byUserId = new ArrayList<>();
         if (filter) {
-            byUserId = this.apiKeyRepository.getByUserIdAndIsActive(userId, true);
+            byUserId = this.apiKeyRepository.getByUserIdAndIsActiveAndValidUntilBefore(userId, true, end);
         } else {
-            byUserId = this.apiKeyRepository.getByUserId(userId);
+            byUserId = this.apiKeyRepository.getByUserIdAndValidUntilBefore(userId, end);
         }
         // Mapping to output
         return mapToOutList(byUserId);

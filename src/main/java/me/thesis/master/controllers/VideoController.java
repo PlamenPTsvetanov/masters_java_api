@@ -44,9 +44,22 @@ public class VideoController extends BaseController {
     public List<VideoOutView> allVideos(@RequestHeader("User-Id") UUID userId,
                                         @RequestHeader("Api-Key") String apiKey,
                                         @RequestParam("size") int size,
-                                        @RequestParam("offset") int offset) {
+                                        @RequestParam("offset") int offset,
+                                        @RequestParam(value = "name", required = false) String name,
+                                        @RequestParam(value = "isCopyrighted", required = false) Boolean isCopyrighted,
+                                        @RequestParam(value = "freeToUse", required = false) Boolean freeToUse,
+                                        @RequestParam(value = "status", required = false) String status,
+                                        @RequestParam(value = "statusDescription", required = false) String statusDescription,
+                                        @RequestParam(value = "deepfakeStatus", required = false) String deepfakeStatus,
+                                        @RequestParam(value = "deepFakeStatusDescription", required = false) String deepFakeStatusDescription) {
         userService.validateUser(userId);
         apiKeyService.checkApiKeyValidity(userId, apiKey);
-        return this.videoService.getAllVideosFor(userId, size, offset);
+        return this.videoService.getAllVideosFor(userId, size, offset, name,
+                isCopyrighted,
+                freeToUse,
+                status,
+                statusDescription,
+                deepfakeStatus,
+                deepFakeStatusDescription);
     }
 }

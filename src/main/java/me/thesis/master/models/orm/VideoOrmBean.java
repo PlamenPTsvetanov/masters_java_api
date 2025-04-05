@@ -26,13 +26,13 @@ public class VideoOrmBean extends BaseOrmBean {
     private Boolean freeToUse;
     @Column(name = "USER_ID", nullable = false)
     private UUID userId;
-    @Column(name = "STATUS", nullable = false)
+    @Column(name = "STATUS", length = 20, nullable = false)
     private String status;
-    @Column(name = "STATUS_DESCRIPTION")
+    @Column(name = "STATUS_DESCRIPTION", length = 100)
     private String statusDescription;
-    @Column(name = "DEEPFAKE_STATUS")
+    @Column(name = "DEEPFAKE_STATUS", length = 20, nullable = false)
     private String deepfakeStatus;
-    @Column(name = "DEEPFAKE_STATUS_DESCRIPTION")
+    @Column(name = "DEEPFAKE_STATUS_DESCRIPTION", length = 100)
     private String deepfakeStatusDescription;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID", updatable = false, insertable = false, nullable = false)
