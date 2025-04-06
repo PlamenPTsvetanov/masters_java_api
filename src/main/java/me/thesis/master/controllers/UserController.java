@@ -7,7 +7,10 @@ import me.thesis.master.models.views.user.UserInitialCreationOutView;
 import me.thesis.master.models.views.user.UserOutView;
 import me.thesis.master.services.ApiKeyService;
 import me.thesis.master.services.UserService;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/users")
@@ -18,11 +21,6 @@ public class UserController extends BaseController {
     public UserController(UserService userService, ApiKeyService apiKeyService) {
         this.userService = userService;
         this.apiKeyService = apiKeyService;
-    }
-
-    @GetMapping(path = "/ok")
-    public String testOk() {
-        return "Ok";
     }
 
     @PostMapping(path = "")
@@ -39,19 +37,4 @@ public class UserController extends BaseController {
 
         return out;
     }
-
-//    @PutMapping(path = "/{id}")
-//    public UserOutView putUser(@PathVariable("id") UUID id, @RequestBody final UserInView userInView) {
-//        return this.userService.putOne(userInView, id);
-//    }
-//
-//    @DeleteMapping(path = "/{id}")
-//    public UserOutView deleteUser(@PathVariable("id") UUID id) {
-//        return this.userService.deleteOne(id);
-//    }
-//
-//    @GetMapping(path = "/{id}")
-//    public UserOutView getUser(@PathVariable("id") UUID id) {
-//        return this.userService.getOne(id);
-//    }
 }

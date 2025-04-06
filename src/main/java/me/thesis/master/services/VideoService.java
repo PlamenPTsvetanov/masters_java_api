@@ -50,24 +50,42 @@ public class VideoService extends BaseService<VideoOrmBean, VideoInView, VideoOu
         return videoRepository;
     }
 
-    public List<VideoOutView> getAllVideosFor(UUID userId, int size, int offset, String name, Boolean isCopyrighted, Boolean freeToUse, String status, String statusDescription, String deepfakeStatus, String deepFakeStatusDescription) {
+    public List<VideoOutView> getAllVideosFor(UUID userId,
+                                              int size,
+                                              int offset,
+                                              String name,
+                                              Boolean isCopyrighted,
+                                              Boolean freeToUse,
+                                              String status,
+                                              String statusDescription,
+                                              String deepfakeStatus,
+                                              String deepFakeStatusDescription) {
         if (size > 100) {
             size = 100;
         }
         if (size < 0) {
             size = 10;
         }
+        if (offset < 0) {
+            offset = 0;
+        }
 
         Pageable page = PageRequest.of(offset, size);
+        if (name != null) name = "%" + name + "%";
+        if (status != null) status = "%" + status + "%";
+        if (statusDescription != null) statusDescription = "%" + statusDescription + "%";
+        if (deepfakeStatus != null) deepfakeStatus = "%" + deepfakeStatus + "%";
+        if (deepFakeStatusDescription != null) deepFakeStatusDescription = "%" + deepFakeStatusDescription + "%";
         List<VideoOrmBean> allByUserId = this.videoRepository.findAllByFilter(
                 userId,
                 name,
-                isCopyrighted,
-                freeToUse,
                 status,
+                freeToUse,
+                isCopyrighted,
                 statusDescription,
                 deepfakeStatus,
-                deepFakeStatusDescription, page);
+                deepFakeStatusDescription,
+                page);
 
         return mapToOutList(allByUserId);
     }
@@ -87,7 +105,7 @@ public class VideoService extends BaseService<VideoOrmBean, VideoInView, VideoOu
             ormBean.setUserId(userId);
             ormBean.setUser(userRepository.findById(userId).get());
             ormBean.setStatus("PROCESSING");
-
+            ormBean.setDeepfakeStatus("NO_DEEPFAKE");
             VideoOrmBean save = videoRepository.save(ormBean);
 
             String json = buildTransferView(ormBean);
@@ -161,7 +179,7 @@ public class VideoService extends BaseService<VideoOrmBean, VideoInView, VideoOu
         }
 
         //Securing file
-        String filePath = saveLocationDir + File.separator + UUID.randomUUID();
+        String filePath = saveLocationDir + File.separator + UUID.randomUUID() + ".mp4";
         File destinationFile = new File(filePath);
 
         multipartFile.transferTo(destinationFile);

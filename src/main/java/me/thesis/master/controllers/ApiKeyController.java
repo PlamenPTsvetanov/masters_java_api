@@ -31,6 +31,7 @@ public class ApiKeyController extends BaseController {
     @GetMapping("/active")
     public List<ApiKeyOutView> getAllActive(@RequestHeader("User-Id") UUID userId,
                                             @RequestParam(value = "validTill", required = false) Instant instant) {
+        userService.validateUser(userId);
         return this.apiKeyService.getAllForUser(userId, true, instant);
     }
 

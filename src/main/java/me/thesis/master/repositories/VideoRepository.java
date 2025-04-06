@@ -13,20 +13,21 @@ import java.util.UUID;
 @Repository
 public interface VideoRepository extends BaseRepository<VideoOrmBean> {
 
-    @Query("select n from VideoOrmBean n where " +
-            "n.userId = :userId AND" +
-            " (:name = NULL OR n.name LIKE CONCAT('%', :name, '%')) AND " +
-            " (:isCopyrighted = NULL OR n.isCopyrighted = :isCopyrighted) AND " +
-            " (:freeToUse = NULL OR n.freeToUse = :freeToUse) AND " +
-            " (:status = NULL OR n.status = :status) AND " +
-            " (:statusDescription = NULL OR n.statusDescription LIKE CONCAT('%', :statusDescription, '%')) AND " +
-            " (:deepfakeStatus = NULL OR n.deepfakeStatus = :deepfakeStatus) AND " +
-            " (:deepFakeStatusDescription = NULL OR n.deepfakeStatusDescription LIKE CONCAT('%', :deepFakeStatusDescription, '%'))")
+    @Query("select n from VideoOrmBean n  "
+            + " WHERE n.userId = :userId"
+            + " AND (:name is null or n.name LIKE :name) "
+            + " AND (:status is null or n.status LIKE :status) "
+            + " AND (:isCopyrighted is null or n.isCopyrighted = :isCopyrighted) "
+            + " AND (:freeToUse is null or n.freeToUse = :freeToUse) "
+            + " AND (:statusDescription is null or n.statusDescription LIKE :statusDescription) "
+            + " AND (:deepfakeStatus is null or n.deepfakeStatus = :deepfakeStatus) "
+            + " AND (:deepFakeStatusDescription is null or n.deepfakeStatusDescription LIKE :deepFakeStatusDescription)"
+    )
     List<VideoOrmBean> findAllByFilter(@Param("userId") UUID userId,
                                        @Param("name") String name,
+                                       @Param("status") String status,
                                        @Param("isCopyrighted") Boolean isCopyrighted,
                                        @Param("freeToUse") Boolean freeToUse,
-                                       @Param("status") String status,
                                        @Param("statusDescription") String statusDescription,
                                        @Param("deepfakeStatus") String deepfakeStatus,
                                        @Param("deepFakeStatusDescription") String deepFakeStatusDescription,

@@ -1,4 +1,4 @@
 package me.thesis.master.common.controllers;
 
-public class BaseController {
+public abstract class BaseController {
 }

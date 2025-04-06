@@ -10,5 +10,4 @@ FROM eclipse-temurin:21-jdk AS runtime
 WORKDIR /app
 COPY --from=build /app/target/java_api.jar app.jar
 
-# Run the application
 ENTRYPOINT ["java", "-jar", "/app/app.jar"]

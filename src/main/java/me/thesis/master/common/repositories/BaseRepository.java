@@ -6,5 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;
 
-public interface BaseRepository<Orm extends BaseOrmBean> extends JpaRepository<Orm, UUID> {
+public interface BaseRepository<Orm extends BaseOrmBean>
+        extends JpaRepository<Orm, UUID> {
 }
