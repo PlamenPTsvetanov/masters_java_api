@@ -45,7 +45,7 @@ public class ApiKeyService extends BaseService<ApiKeyOrmBean, BaseInView, ApiKey
     @Transactional
     public List<ApiKeyOutView> getAllForUser(UUID userId, Boolean filter, Instant end) {
         if (end == null) {
-            end = Instant.now().plus(1, ChronoUnit.CENTURIES);
+            end = Instant.now().plus(36524L, ChronoUnit.DAYS);
         }
 
         // Retrieving all desired keys
